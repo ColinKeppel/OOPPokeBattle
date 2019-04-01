@@ -6,9 +6,7 @@ abstract class Pokemon
     Protected $health;
     Protected $maxHealth;
     Protected $weakness;
-    Protected $weaknessMp;
-    Protected $resitance;
-    Protected $resitanceMp;
+    Protected $resistance;
     Protected $attacks;
 
     public function __get($name)
@@ -16,13 +14,15 @@ abstract class Pokemon
         return $this->$name;
     }
 
-
     public function doDamage($attackPoints, $attacker) {
-        if ($this->weakness === $attacker->type) {
-            $newdmg = $attackPoints * $this->weaknessMp;
+
+        if ($this->weakness->name === $attacker->type) {
+            $newdmg = $attackPoints * $this->weakness->multiplier;
         }
-        if ($this->resitance === $attacker->type) {
-            $newdmg = $attackPoints - $this->resitanceMp;
+        else if ($this->resistance->name === $attacker->type) {
+            $newdmg = $attackPoints - $this->resistance->multiplier;
+        } else {
+            $newdmg = $attackPoints;
         }
         $this->health = $this->health - $newdmg;
         return $this->health;
@@ -36,12 +36,12 @@ class pikachu extends Pokemon
         $this->type = "Lightning";
         $this->maxHealth = "60";
         $this->health = $this->maxHealth;
-        $this->weakness = "Fire";
-        $this->weaknessMp = 1.5;
-        $this->resitance = "Fighting";
-        $this->resitanceMp = 20;
-        $this->attacks = [new Attack('Electric Ring', 50),
-            new Attack('Pika Punch', 20)];
+        $this->resistance = new resistance('Fighting', 20);
+        $this->weakness = new weakness('Fire', 1.5);
+        $this->attacks = [
+            new Attack('Electric Ring', 50),
+            new Attack('Pika Punch', 20)
+        ];
     }
 }
 class charmeleon extends Pokemon
@@ -51,12 +51,13 @@ class charmeleon extends Pokemon
         $this->type = "Fire";
         $this->maxHealth = "60";
         $this->health = $this->maxHealth;
-        $this->weakness = "Water";
-        $this->weaknessMp = 2;
-        $this->resitance = "Lightning";
-        $this->resitanceMp = 10;
-        $this->attacks = [new Attack('Head Butt', 10),
-            new Attack('Flare', 30)];
+        $this->resistance = new resistance('Lightning', 10);
+        $this->weakness = new weakness('Water' , 2);
+        $this->attacks = [
+            new Attack('Head Butt', 10),
+            new Attack('Flare', 30)
+        ];
     }
 }
+
 
